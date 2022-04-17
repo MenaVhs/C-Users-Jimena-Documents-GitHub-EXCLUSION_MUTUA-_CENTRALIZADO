@@ -66,7 +66,6 @@ class InterfazServidor:
         self.lblEstado.configure(font=texto)
         self.lblEstado.pack(padx=60,pady=10)
 
-
         self.cola1 = Label(master, text="Cola Zona Crítica 1[]")
         self.cola1.configure(font=texto)
         self.cola1.pack(padx=20,pady=10)
