@@ -2,8 +2,8 @@ import socket
 import sys
 import threading
 from tkinter import Tk
-from InterfazGrafica import InterfazGrafica
+from InterfazGraficaCliente import InterfazGraficaCliente
 
 root = Tk()
-InterfazGrafica(root, 50001, 50011, 1) 
+InterfazGraficaCliente(root, 50001, 50011, 0) 
 root.mainloop()
