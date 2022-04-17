@@ -60,28 +60,6 @@ class InterfazGrafica:
         self.lblEstado.configure(font=texto)
         self.lblEstado.pack(padx=60,pady=10)
 
-
-        # Las colas las almacena el servidor
-        '''
-        self.cola1 = Label(master, text="Cola Zona Crítica 1[]")
-        self.cola1.configure(font=texto)
-        self.cola1.pack(padx=20,pady=10)
-        self.cola2 = Label(master, text="Cola Zona Crítica 2[]")
-        self.cola2.configure(font=texto)
-        self.cola2.pack(padx=20,pady=10)
-        '''
-        
-        '''
-        # Recibe Ok del servidor
-        self.servidor_ok1 = Label(master, text= 'Permiso:')
-        self.servidor_ok1.configure(font=textoBold)
-        self.servidor_ok1.pack(padx=60,pady=10)
-        self.lbl_permiso = Label(master, text = '')
-        self.lbl_permiso.config(text=f'{self.permiso}')
-        self.lbl_permiso.configure(font=texto)
-        self.lbl_permiso.pack(padx=60,pady=10)        
-        '''
-
         self.botonZonaCritica = Button(master, text="→ Solicitar Zona crítica 1", command=self.solicitar_zona1)
         self.botonZonaCritica.configure(font=boton)
         self.botonZonaCritica.pack(padx=20,pady=10)

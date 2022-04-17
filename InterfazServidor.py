@@ -6,7 +6,7 @@ import sys
 import threading
 
 class InterfazServidor:
-    nodo_servidor = 60000
+    NODO_SERVIDOR = 50009
     NODOS_ENVIO = [50001,50002,50003,50004,50005,50006]
 
     puerto_escucha = 0
@@ -18,9 +18,6 @@ class InterfazServidor:
 
     sock = NULL
     permiso = NULL
-    solicitud = 'solicitud'
-    concesion = 'concesión'
-    liberacion = 'liberación'
 
     solicita_zona  = 'Solicita Zona Crítica 1'
     solicita_zona2 = 'Solicita Zona Crítica 2'
@@ -33,25 +30,23 @@ class InterfazServidor:
         self.estado = [self.sin_accion,self.sin_accion]
 
         self.puerto_escucha = puerto_escucha
-        #self.puerto_envio = puerto_envio
-        #self.mi_id = mi_id-1
+        # self.puerto_envio = puerto_envio
+        # self.mi_id = mi_id-1
     
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        #self.sock.bind(('127.0.0.1', self.puerto_envio))
+        self.sock.bind(('127.0.0.1', self.puerto_envio))
 
         listener = threading.Thread(target=self.listen, daemon=True)
         listener.start()
         self.master = master
 
         titulo = tkFont.Font(family="Arial", size=18, weight="bold", slant="italic")
-        boton = tkFont.Font(family="Arial", size=16, weight="bold")
         texto = tkFont.Font(family="Arial", size=16, weight="normal")
         textoBold = tkFont.Font(family="Arial", size=16, weight="bold")
 
-
         master.title("Servidor")
 
-        self.etiquetaProceso = Label(master, text='Servidor')
+        self.etiquetaProceso = Label(master, text = 'Servidor')
         self.etiquetaProceso.configure(font=titulo)
         self.etiquetaProceso.pack(padx=60,pady=10)
 
@@ -90,30 +85,32 @@ class InterfazServidor:
         self.lbl_permiso2.config(text=f'Está: {self.mi_id}') #duda, de dónde saco el id del proceso
 
     def listen(self): #idC = 0, acción(SOLIZ, SALGOZ) = 1, NUMERO ZONA = 2)
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.bind(('127.0.0.1', self.puerto_escucha))
+        sockServer = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sockServer.bind(('127.0.0.1', self.puerto_escucha))
 
         while True:
-            data = sock.recv(1024)
-            #print('\rpeer: {}\n> '.format(data.decode()), end='')
-            msg_rep = data.decode()
-            msg_array = msg_rep.split(',')
-            m_id_proceso_remitente = msg_array[0] # idC = 0
-            m_zona_pedida = msg_array[2]
-            if m_zona_pedida == '1': #zona uno
-                if msg_array[1] == self.solicita_zona:
-                    # si hay un proceso en zona1, server pone en cola
-                    if  self.estado[0] == self.en_zona:
-                        return
-                    print('encola')
-                    self.cola_zona_1.append(int(m_id_proceso_remitente)+ 1 )
-                    self.actualziar_interfaz()
+            sock = sockServer.accept()
+            while True:
+                data = sock.recv(1024).decode()
+                #print('\rpeer: {}\n> '.format(data.decode()), end='')
+                msg_rep = data.decode()
+                msg_array = msg_rep.split(',')
+                m_id_proceso_remitente = msg_array[0] # idC = 0
+                m_zona_pedida = msg_array[2]
+                if m_zona_pedida == '1': #zona uno
+                    if msg_array[1] == self.solicita_zona:
+                        # si hay un proceso en zona1, server pone en cola
+                        if  self.estado[0] == self.en_zona:
+                            return
+                        print('encola')
+                        self.cola_zona_1.append(int(m_id_proceso_remitente)+ 1 )
+                        self.actualziar_interfaz()
 
-                    # si no hay proceso en zona1, server mete proceso a zona1
-                    if self.estado[0] == self.sin_accion:
-                        self.estado[0] = self.m_id_proceso_remitente 
-                        msg =f'{str(self.mi_id)}, ok , {m_zona_pedida}'
-                        self.sock.sendto(msg.encode(), ('127.0.0.1', self.NODOS_ENVIO[int(m_id_proceso_remitente)]))  
-                return
-                  
-            self.actualziar_interfaz()
+                        # si no hay proceso en zona1, server mete proceso a zona1
+                        if self.estado[0] == self.sin_accion:
+                            self.estado[0] = m_id_proceso_remitente 
+                            msg =f'{str(self.mi_id)}, ok , {m_zona_pedida}'
+                            self.sock.sendto(msg.encode(), ('127.0.0.1', self.NODOS_ENVIO[int(m_id_proceso_remitente)]))  
+                    return
+                                       
+                self.actualziar_interfaz()

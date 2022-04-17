@@ -19,7 +19,7 @@ class InterfazGraficaCliente:
     saliendo_de_zona1 = 'Saliendo_de_zona 2'
     sin_accion = 'Sin Acción'
 
-    def __init__(self, master, puerto_escucha, puerto_envio, mi_id ):
+    def __init__(self, master, puerto_envio,puerto_escucha, mi_id ):
 
         self.master = master
         self.estado = [self.sin_accion, self.sin_accion]
@@ -105,8 +105,9 @@ class InterfazGraficaCliente:
             self.sock.sendto(msg.encode(), ('127.0.0.1', self.NODO_SERVIDOR))
 
     def listen(self):
+
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.bind(('127.0.0.1', self.puerto_escucha))
+        sock.connect(('127.0.0.1', self.NODO_SERVIDOR))
         while True:
             data = sock.recv(1024)
             print(data)
