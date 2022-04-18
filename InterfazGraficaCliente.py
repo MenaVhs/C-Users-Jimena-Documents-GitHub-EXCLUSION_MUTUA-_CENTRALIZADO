@@ -10,16 +10,16 @@ class InterfazGraficaCliente:
     puerto_escucha = 0
     puerto_envio = 0
     estado = []
-    sock = NULL
-    solicita_zona  = 'Solicita Zona Crítica 1'
+    s = NULL
+    solicita_zona1  = 'Solicita Zona Crítica 1'
     solicita_zona2 = 'Solicita Zona Crítica 2'
+    saliendo_de_zona1 = 'Saliendo_de_zona 1'
+    saliendo_de_zona2 = 'Saliendo_de_zona 2'
     en_zona = 'En Zona Crítica 1'
     en_zona2 = 'En Zona Crítica 2'
-    saliendo_de_zona1 = 'Saliendo_de_zona 1'
-    saliendo_de_zona1 = 'Saliendo_de_zona 2'
     sin_accion = 'Sin Acción'
 
-    def __init__(self, master, puerto_envio,puerto_escucha, mi_id ):
+    def __init__(self, master, puerto_escucha, puerto_envio, mi_id ):
 
         self.master = master
         self.estado = [self.sin_accion, self.sin_accion]
@@ -27,8 +27,8 @@ class InterfazGraficaCliente:
         self.puerto_envio = puerto_envio
         self.mi_id = mi_id
 
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind(('127.0.0.1', self.puerto_envio))
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.s.bind(('127.0.0.1', self.puerto_envio))
 
         listener = threading.Thread(target=self.listen, daemon=True)
         listener.start()
@@ -67,10 +67,10 @@ class InterfazGraficaCliente:
     
    
     def solicitar_zona1(self):
-        if self.estado[0] == self.solicita_zona or self.estado[0] == self.en_zona:
+        if self.estado[0] == self.solicita_zona1 or self.estado[0] == self.en_zona:
                 return
-        self.estado[0] = self.solicita_zona
-        msg =f'{str(self.mi_id)},{self.solicita_zona},1'
+        self.estado[0] = self.solicita_zona1
+        msg =f'{str(self.mi_id)},{self.solicita_zona1}'
         self.enviar_mensaje_a_servidor(msg)
         self.actualziar_interfaz()
         
@@ -79,7 +79,7 @@ class InterfazGraficaCliente:
         if self.estado[1] == self.solicita_zona2 or self.estado[1] == self.en_zona2:
                 return
         self.estado[1] = self.solicita_zona2
-        msg =f'{str(self.mi_id)},{self.solicita_zona2},2'
+        msg =f'{str(self.mi_id)},{self.solicita_zona2}'
         self.enviar_mensaje_a_servidor(msg)
         self.actualziar_interfaz()
 
@@ -87,40 +87,41 @@ class InterfazGraficaCliente:
         if self.estado[0] == self.en_zona:
             print('saliendo de zona crítica')
             self.estado[0] = self.sin_accion
-            msg =f'{str(self.mi_id)},{self.saliendo_de_zona1}, 1'
+            msg =f'{str(self.mi_id)},{self.saliendo_de_zona1}'
             self.enviar_mensaje_a_servidor(msg)
             self.actualziar_interfaz()
 
     def salir_de_zona2(self):
         if self.estado[1] == self.en_zona2:
             self.estado[1] = self.sin_accion
-            msg =f'{str(self.mi_id)},{self.saliendo_de_zona2}, 2'
+            msg =f'{str(self.mi_id)},{self.saliendo_de_zona2}'
             self.enviar_mensaje_a_servidor(msg)
             self.actualziar_interfaz()
     
     def actualziar_interfaz(self):
-         self.lblEstado.config(text=f'{self.estado[0]},{self.estado[1]}')
+        self.lblEstado.config(text=f'{self.estado[0]},{self.estado[1]}')
     
     def enviar_mensaje_a_servidor(self, msg):
-            self.sock.sendto(msg.encode(), ('127.0.0.1', self.NODO_SERVIDOR))
+        print(msg, '', self.NODO_SERVIDOR)
+        self.s.sendto(msg.encode(), ('127.0.0.1', self.NODO_SERVIDOR))
 
     def listen(self):
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.connect(('127.0.0.1', self.NODO_SERVIDOR))
+        sock.bind(('127.0.0.1', self.puerto_escucha))
         while True:
             data = sock.recv(1024)
-            print(data)
             print('\rpeer: {}\n> '.format(data.decode()), end='')
             mensaje_recibido = data.decode()
             msg_array = mensaje_recibido.split(',')
             respuesta = msg_array[0]
             zona = msg_array[1]
-
+            print(respuesta, zona)
+            # 'ok,1'
             if respuesta == 'ok':
-                if zona == 1:
-                    self.estado[1] = self.en_zona
-                if zona == 2:
-                    self.estado = self.en_zona2    
+                if zona == '1':
+                    self.estado[0] = self.en_zona
+                if zona == '2':
+                    self.estado[1] = self.en_zona2    
                 
             self.actualziar_interfaz()

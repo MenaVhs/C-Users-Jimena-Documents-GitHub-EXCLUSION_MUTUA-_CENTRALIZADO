@@ -2,8 +2,8 @@ import socket
 import sys
 import threading
 from tkinter import Tk
-from InterfazServidor import InterfazServidor
+from InterfazServer import InterfazServer
 
 root = Tk()
-InterfazServidor(root, 60000)  # aquí debe escuchar a todos
+InterfazServer(root, 50009, 50019, 99)  # aquí debe escuchar a todos
 root.mainloop()
