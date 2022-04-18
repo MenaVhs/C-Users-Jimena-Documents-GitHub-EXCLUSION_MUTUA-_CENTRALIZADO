@@ -6,7 +6,7 @@ import sys
 import threading
 
 class InterfazServidor:
-    NODO_SERVIDOR = 50009
+    
     NODOS_ENVIO = [50001,50002,50003,50004,50005,50006]
 
     puerto_escucha = 0
@@ -18,6 +18,7 @@ class InterfazServidor:
 
     sock = NULL
     permiso = NULL
+    NODO_SERVIDOR = 50009
 
     solicita_zona  = 'Solicita Zona Crítica 1'
     solicita_zona2 = 'Solicita Zona Crítica 2'
@@ -28,13 +29,13 @@ class InterfazServidor:
 
     def __init__(self, master, puerto_escucha):
         self.estado = [self.sin_accion,self.sin_accion]
-
+        self.NODO_SERVIDOR = 50009
         self.puerto_escucha = puerto_escucha
         # self.puerto_envio = puerto_envio
         # self.mi_id = mi_id-1
     
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind(('127.0.0.1', self.puerto_envio))
+        self.sock.bind(('127.0.0.1', self.NODO_SERVIDOR))
 
         listener = threading.Thread(target=self.listen, daemon=True)
         listener.start()
@@ -91,7 +92,7 @@ class InterfazServidor:
         while True:
             sock = sockServer.accept()
             while True:
-                data = sock.recv(1024).decode()
+                data = sock.recv(1024)
                 #print('\rpeer: {}\n> '.format(data.decode()), end='')
                 msg_rep = data.decode()
                 msg_array = msg_rep.split(',')
@@ -112,5 +113,5 @@ class InterfazServidor:
                             msg =f'{str(self.mi_id)}, ok , {m_zona_pedida}'
                             self.sock.sendto(msg.encode(), ('127.0.0.1', self.NODOS_ENVIO[int(m_id_proceso_remitente)]))  
                     return
-                                       
+
                 self.actualziar_interfaz()
