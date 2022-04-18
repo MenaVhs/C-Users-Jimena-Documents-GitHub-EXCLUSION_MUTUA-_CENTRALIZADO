@@ -5,5 +5,5 @@ from tkinter import Tk
 from InterfazGraficaCliente import InterfazGraficaCliente
 
 root = Tk()
-InterfazGraficaCliente(root, 50001, 50011, 1) 
+InterfazGraficaCliente(root, 50004, 50014, 4) 
 root.mainloop()

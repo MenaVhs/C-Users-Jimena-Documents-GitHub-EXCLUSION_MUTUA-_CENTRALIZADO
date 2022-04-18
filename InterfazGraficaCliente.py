@@ -40,7 +40,7 @@ class InterfazGraficaCliente:
 
         master.title("Exclusión mutua: Algoritmo Centralizado")
 
-        self.etiquetaProceso = Label(master, text='Proceso {}'.format(self.mi_id+1))
+        self.etiquetaProceso = Label(master, text='Proceso {}'.format(self.mi_id))
         self.etiquetaProceso.configure(font=titulo)
         self.etiquetaProceso.pack(padx=60,pady=10)
                 
@@ -68,7 +68,7 @@ class InterfazGraficaCliente:
    
     def solicitar_zona1(self):
         if self.estado[0] == self.solicita_zona1 or self.estado[0] == self.en_zona:
-                return
+            return
         self.estado[0] = self.solicita_zona1
         msg =f'{str(self.mi_id)},{self.solicita_zona1}'
         self.enviar_mensaje_a_servidor(msg)
@@ -77,7 +77,7 @@ class InterfazGraficaCliente:
 
     def solicitar_zona2(self):
         if self.estado[1] == self.solicita_zona2 or self.estado[1] == self.en_zona2:
-                return
+            return
         self.estado[1] = self.solicita_zona2
         msg =f'{str(self.mi_id)},{self.solicita_zona2}'
         self.enviar_mensaje_a_servidor(msg)
@@ -85,7 +85,6 @@ class InterfazGraficaCliente:
 
     def salir_de_zona1(self):
         if self.estado[0] == self.en_zona:
-            print('saliendo de zona crítica')
             self.estado[0] = self.sin_accion
             msg =f'{str(self.mi_id)},{self.saliendo_de_zona1}'
             self.enviar_mensaje_a_servidor(msg)
