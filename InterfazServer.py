@@ -79,13 +79,6 @@ class InterfazServer:
         self.cola2.configure(font=texto)
         self.cola2.pack(padx=20,pady=10)
         
-        # self.lbl_permiso = Label(master, text="En Zona Crítica 1: ")
-        # self.lbl_permiso.configure(font=texto)
-        # self.lbl_permiso.pack(padx=20,pady=10)
-
-        # self.lbl_permiso2 = Label(master, text="En Zona Crítica 2: ")
-        # self.lbl_permiso2.configure(font=texto)
-        # self.lbl_permiso2.pack(padx=20,pady=10)
  
     def actualziar_interfaz(self):
         self.lbl_zona1.config(text = f'{str(self.zona_1)}')
